@@ -10,16 +10,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "12.9.1",
-      "onFail": "download"
-    }
-  },
   "packageManager": "pnpm@12.9.1",
   "type": "module",
   "devDependencies": {
+    "@prisma/client": "^6.19.0",
+    "prisma": "^6.19.0",
     "typescript": "^7.0.2"
   },
   "dependencies": {

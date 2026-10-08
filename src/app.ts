@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import notFound from 'middleware/notfound.js';
 import router from 'routes/routes.js';
+import globalErrorHandler from 'middleware/globalErrorHandler.js';
  
 const app:Application = express()
 
@@ -37,7 +38,7 @@ app.get("/", (req, res)=>{
 res.send("Server is running")
 })
 
-
+app.use(globalErrorHandler)
 app.use(notFound)
 
 export default app
