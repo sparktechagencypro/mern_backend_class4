@@ -26,8 +26,6 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-
   task Task[]
 }
 
@@ -47,7 +45,7 @@ model Task {
 }
 
 
-
+ 
 
 enum USER_STATUS {
   active

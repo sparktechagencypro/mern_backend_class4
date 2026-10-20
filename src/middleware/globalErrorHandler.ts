@@ -2,6 +2,9 @@ import config from "config/index.js"
 import type { ErrorRequestHandler } from "express"
 import type { TErrorSources } from "interface/error.js"
 import AppError from "./AppError.js"
+import { ZodError } from "zod"
+import handelZodError from "./zodError.js"
+import handleZodError from "./zodError.js"
 
 const globalErrorHandler:ErrorRequestHandler = (err, req, res, next)=>{
     let statusCode = 500
@@ -22,6 +25,13 @@ if(err instanceof AppError){
         }
     ]
 
+}
+else
+if(err instanceof ZodError){
+   const simplifiedError = handleZodError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSources = simplifiedError?.errorSources;
 }
 else if(err instanceof Error){
         message = err.message
