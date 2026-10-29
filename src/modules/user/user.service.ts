@@ -2,20 +2,38 @@ import AppError from "middleware/AppError.js"
 import httpStatus from "http-status"
 import type { Prisma } from "@prisma/browser.js"
 import prisma from "utils/prisma.js"
+import bcrypt from 'bcrypt';
+import config from "config/index.js";
 
 const createUser = async(payload: Prisma.UserCreateInput)=>{
-    // const createUser = prisma.user.create({
-        
-    //     data:payload
-    
-    // })
+   try {
+    const isExist = await prisma.user.findFirst({
+      where: {
+        email: payload.email,
+      },
+      include: {
+        verification: {
+          select: {
+            status: true,
+          },
+        },
+      },
+    });
 
-    // if(!createUser){
-    //     throw new AppError(httpStatus.BAD_GATEWAY, "user creation failed!")
-    // }
-   
+    payload['password'] =  await bcrypt.hash(payload.password, Number(config.salt_rounds));
 
-    return createUser
+    if (isExist) { 
+      throw new AppError(
+        httpStatus.CONFLICT,
+        'User already exists and is verified',
+      );
+    }
+    const result = await prisma.user.create({ data: payload });
+
+    return result;
+  } catch (error: any) {
+    throw new AppError(httpStatus?.BAD_GATEWAY, error?.message);
+  }
 }
 
 
