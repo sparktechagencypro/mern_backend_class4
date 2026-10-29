@@ -15,46 +15,42 @@ datasource db {
 }
 
 
-
 model User {
-  id  String  @id @default(auto()) @map("_id") @db.ObjectId 
-  name String
-  profile String?
-  status USER_STATUS @default(active)
-  email String @unique
-  password String
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  email String @unique 
+  name String? 
+  profile String? 
+  role ROLE @default(user)
+  password String? 
+  status AccountStatus @default(inactive)
+  isDeleted Boolean @default(false)
+  verification Verification?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  task Task[]
 }
 
 
-model Task {
-  id String @id @default(auto()) @map("_id") @db.ObjectId 
-  userId String @unique
-  title String 
-  description String?
-  status TASK_TYPE @default(pending)
+model Verification {
+  id String @id @db.ObjectId @map("_id")
+  userId String @unique @db.ObjectId
+  otp Int 
+  status Boolean @default(false)
+  expiredAt DateTime
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-
-  user User @relation(fields: [userId], references: [id])
+user User @relation(fields: [userId], references: [id])
 }
 
 
- 
 
-enum USER_STATUS {
+enum ROLE {
+  admin
+  sub_admin
+  super_admin
+  user
+}
+
+enum AccountStatus {
   active
-  blocked
-}
-
-
-enum TASK_TYPE {
-  pending
-  complete
-  active
+  inactive
 }
