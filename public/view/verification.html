@@ -1,90 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OTP Verification</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
 </head>
-<body style="margin:0; padding:0; background-color:#f4f7fb; font-family:Arial,Helvetica,sans-serif;">
 
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
-    style="background-color:#f4f7fb; padding:40px 12px;">
-    <tr>
-      <td align="center">
+<body style="margin:0; padding:0; background-color:#f4f6f9; font-family:Arial, Helvetica, sans-serif;">
 
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
-          style="max-width:520px; background:#ffffff; border-radius:12px; overflow:hidden;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
+           style="background-color:#f4f6f9; padding:40px 15px;">
+        <tr>
+            <td align="center">
 
-          <!-- Header -->
-          <tr>
-            <td align="center"
-              style="background:#2563eb; padding:28px 20px; color:#ffffff;">
-              <h1 style="margin:0; font-size:26px;">Verify Your Email</h1>
-              <p style="margin:10px 0 0; font-size:14px; color:#dbeafe;">
-                Complete your verification securely
-              </p>
+                <!-- Email Container -->
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0"
+                       style="max-width:500px; background-color:#ffffff; border-radius:12px; overflow:hidden;">
+
+                    <!-- Header -->
+                    <tr>
+                        <td align="center" style="padding:30px 25px 20px;">
+                            <h1 style="margin:0; font-size:26px; color:#2563eb;">
+                                YourBrand
+                            </h1>
+                            <p style="margin:10px 0 0; font-size:14px; color:#6b7280;">
+                                Email Verification
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding:10px 30px 30px; color:#374151;">
+
+                            <h2 style="font-size:22px; text-align:center; color:#111827; margin:0 0 15px;">
+                                Verify Your Email Address
+                            </h2>
+
+                            <p style="font-size:15px; line-height:1.7; text-align:center; margin:0 0 20px;">
+                                Hello{{name}},
+                                <br><br>
+                                Use the verification code below to complete your email verification.
+                            </p>
+
+                            <!-- OTP Box -->
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td align="center" style="padding:10px 0 25px;">
+                                        <div style="display:inline-block; background-color:#eff6ff;
+                                                    border:1px dashed #2563eb; border-radius:8px;
+                                                    padding:18px 35px; color:#1d4ed8;
+                                                    font-size:32px; font-weight:bold;
+                                                    letter-spacing:8px;">
+                                            {{otp}}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="font-size:14px; line-height:1.7; text-align:center; color:#6b7280;">
+                                This verification code will expire in
+                                <strong style="color:#111827;">5 minutes</strong>.
+                            </p>
+
+                            <p style="font-size:14px; line-height:1.7; text-align:center; color:#6b7280;">
+                                If you didn't request this code, you can safely ignore this email.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center"
+                            style="background-color:#f9fafb; padding:20px 25px; border-top:1px solid #e5e7eb;">
+
+                            <p style="margin:0 0 8px; font-size:13px; color:#6b7280;">
+                                © 2026 YourBrand. All rights reserved.
+                            </p>
+
+                            <p style="margin:0; font-size:12px; color:#9ca3af;">
+                                This is an automated email. Please do not reply.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                </table>
+
             </td>
-          </tr>
-
-          <!-- Content -->
-          <tr>
-            <td style="padding:32px 28px; color:#334155;">
-
-              <p style="margin:0 0 16px; font-size:16px;">
-                Hello <strong>{{name}}</strong>,
-              </p>
-
-              <p style="font-size:15px; line-height:1.7; margin:0 0 24px;">
-                Use the verification code below to complete your request.
-                This code is valid for <strong>5 minutes</strong>.
-              </p>
-
-              <!-- OTP -->
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td align="center"
-                    style="background:#eff6ff; border:1px dashed #93c5fd;
-                    border-radius:10px; padding:22px 10px;">
-                    <div style="font-size:12px; color:#64748b;
-                      letter-spacing:2px; margin-bottom:12px;">
-                      YOUR VERIFICATION CODE
-                    </div>
-                    <div style="font-size:36px; font-weight:bold;
-                      letter-spacing:10px; color:#1d4ed8;">
-                      {{otp}}
-                    </div>
-                  </td>
-                </tr>
-              </table>
-
-              <p style="font-size:14px; line-height:1.7; margin:24px 0 0;">
-                If you didn't request this code, you can safely ignore this
-                email. Never share your verification code with anyone.
-              </p>
-
-              <hr style="border:0; border-top:1px solid #e2e8f0; margin:28px 0 20px;" />
-
-              <p style="font-size:12px; line-height:1.6; color:#94a3b8;
-                text-align:center; margin:0;">
-                This is an automated message. Please do not reply to this email.
-              </p>
-
-            </td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td align="center"
-              style="background:#f8fafc; padding:18px; color:#94a3b8; font-size:12px;">
-              &copy; {{year}} {{appName}}. All rights reserved.
-            </td>
-          </tr>
-
-        </table>
-
-      </td>
-    </tr>
-  </table>
+        </tr>
+    </table>
 
 </body>
 </html>

@@ -1,68 +1,72 @@
-import type { Prisma } from '@prisma/browser.js';
-import  httpStatus  from 'http-status';
-import AppError from "middleware/AppError.js"
-import moment from 'moment';
-import sendMail from 'utils/nodemailer.js';
-import { generateOTP } from 'utils/otp.js';
-import prisma from "utils/prisma.js"
-import path from "path"
-import fs from "fs"
+import httpStatus from 'http-status';
+import moment from 'moment'; 
+import path from 'path';
+import fs from 'fs'; 
+import AppError from 'middleware/AppError.js';
+import prisma from 'utils/prisma.js';
+import { generateOtp } from 'utils/otpGenerator.js';
+import { sendEmail } from 'utils/mailSender.js';
 
-const reSendOtp = async(email:string)=>{
+const resendOtp = async (payload: { email: string }) => {
+  try {
     const user = await prisma.user.findFirst({
-     where:{
-        email:email
-     }
+      where: {
+        email: payload?.email,
+      },
+    });
 
-    })
+    if (!user)
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'you are not registered with this mail',
+      );
 
-    if(!user) throw new AppError(httpStatus.BAD_REQUEST, "user not found!")
+    const otp = generateOtp();
+    const expiresAt = moment().utc().add(3, 'minute');
 
-    const otp = generateOTP() 
-    const expiredAt = moment().add("m", 3).toDate()
+    const updateOtp = await prisma.verification.upsert({
+      where: {
+        userId: user.id,
+      },
+      update: {
+        otp: Number(otp),
+        expiredAt: expiresAt.toDate(),
+        status: false,
+      },
 
-    const result = await prisma.user.update({
-        where:{
-            id:user.id
-        }, 
-        data:{
-            verification:{
-                update:{
-                    otp: Number(otp), 
-                    expiredAt
-                }
-            }
-        }, 
-        include:{
-            verification: true
-        }
-    })
+      create: {
+        userId: user.id,
+        otp: Number(otp),
+        expiredAt: expiresAt.toDate(),
+        status: false,
+      },
+    });
 
-    
+    if (!updateOtp)
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Failed to resend OTP. Please try again later',
+      );
 
+    const otpEmailPath = path.join(
+      __dirname,
+      '../../../public/view/verification.html',
+    );
 
-     const otpTemp = path.join("../../../public/view/verification.html")
-       const html = fs
-      .readFileSync(otpTemp, 'utf8')
-      .replace('{{name}}', user?.name)
-      .replace('{{otp}}', otp) 
-      
- sendMail({
-        to:email, 
-        subject:"Verification otp",
-        text:"",
-        html:html
-     })
+    await sendEmail(
+      user?.email,
+      'Your One Time OTP',
+      fs
+        .readFileSync(otpEmailPath, 'utf8')
+        .replace('{{otp}}', otp)
+        .replace('{{email}}', user?.email),
+    );
+ return updateOtp
+  } catch (error: any) {
+    throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, error?.message);
+  }
+}; 
 
-    return result
-// const otpData:Prisma.VerificationCreateInput = {
-//  otp: Number(otp), 
-//             expiredAt
-// }
-//     const createOtp = await prisma.verification.update({
-//         where:{
-//             userId:user.id
-//         },
-//         data:otpData 
-//     })
-}
+export const otpServices = { 
+  resendOtp,
+};
