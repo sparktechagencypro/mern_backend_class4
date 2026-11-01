@@ -2,8 +2,7 @@ import config from "config/index.js"
 import type { ErrorRequestHandler } from "express"
 import type { TErrorSources } from "interface/error.js"
 import AppError from "./AppError.js"
-import { ZodError } from "zod"
-import handelZodError from "./zodError.js"
+import { ZodError } from "zod" 
 import handleZodError from "./zodError.js"
 
 const globalErrorHandler:ErrorRequestHandler = (err, req, res, next)=>{

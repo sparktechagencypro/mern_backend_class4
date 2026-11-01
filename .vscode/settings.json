@@ -1,3 +1,8 @@
 {
+<<<<<<< HEAD
     "prisma.pinToPrisma6": true
 }
+=======
+  "prisma.pinToPrisma6": true
+}
+>>>>>>> 1a0f29eed5f3c6ce10bcae75703552eaad749f72

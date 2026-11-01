@@ -1,21 +1,28 @@
-import AppError from "middleware/AppError.js"
+ import AppError from "middleware/AppError.js"
 import httpStatus from "http-status"
 import type { Prisma } from "@prisma/browser.js"
 import prisma from "utils/prisma.js"
+import bcrypt from "bcrypt"
+import config from "config/index.js"
 
 const createUser = async(payload: Prisma.UserCreateInput)=>{
-    // const createUser = prisma.user.create({
-        
-    //     data:payload
+   const {name, email, password, role} = payload
+   const isExists  = await prisma.user.findFirst({
+    where:{
+        email:email
+    }
+   })
+    if(isExists){
+        throw new AppError(httpStatus.BAD_REQUEST, "user already easiest")
+    }
+
+    payload.password = await bcrypt.hash(password, config.bcrypt_salt_rounds)
+
     
-    // })
+    const result = await prisma.user.create({data:payload})
 
-    // if(!createUser){
-    //     throw new AppError(httpStatus.BAD_GATEWAY, "user creation failed!")
-    // }
-   
-
-    return createUser
+    if(!result) throw new AppError(httpStatus.BAD_REQUEST, "user creation failed!")
+    return result
 }
 
 

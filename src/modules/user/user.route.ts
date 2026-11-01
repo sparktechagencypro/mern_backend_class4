@@ -8,7 +8,9 @@ import userValidationSchema from "./user.validation.js";
 const router:Router = Router()
 
 
-router.post("/", validateRequest(userValidationSchema.create),  userController.createUser)
+router.post("/create", 
+    // validateRequest(userValidationSchema.create), 
+     userController.createUser)
 router.get("/", userController.getUser)
 
 
