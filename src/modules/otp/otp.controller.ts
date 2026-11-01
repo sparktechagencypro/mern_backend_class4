@@ -15,6 +15,22 @@ const resendOtp = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+const verifyOtp = catchAsync(async (req: Request, res: Response) => {
+  const token= req.headers.token || req.headers.authorization?.split(' ')[1];
+
+  const result = await otpServices.verifyOtp(token as string, req.body.otp);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'OTP verified successfully',
+    data: result,
+  });
+});
+
+ 
+
 export const otpControllers = {
   resendOtp,
+  verifyOtp
 };

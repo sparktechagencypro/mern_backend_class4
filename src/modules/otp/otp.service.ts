@@ -6,6 +6,8 @@ import AppError from 'middleware/AppError.js';
 import prisma from 'utils/prisma.js';
 import { generateOtp } from 'utils/otpGenerator.js';
 import { sendEmail } from 'utils/mailSender.js';
+import jwt, { type JwtPayload } from "jsonwebtoken"
+import config from 'config/index.js';
 
 const resendOtp = async (payload: { email: string }) => {
   try {
@@ -48,6 +50,16 @@ const resendOtp = async (payload: { email: string }) => {
         'Failed to resend OTP. Please try again later',
       );
 
+      const otpPayload = {
+        id:user.id,
+        email:user.email,
+      }
+
+      const token =jwt.sign(otpPayload, config.jwt_secret as string, {
+        expiresIn: '3m',
+      });
+
+
     const otpEmailPath = path.join(
       __dirname,
       '../../../public/view/verification.html',
@@ -61,12 +73,75 @@ const resendOtp = async (payload: { email: string }) => {
         .replace('{{otp}}', otp)
         .replace('{{email}}', user?.email),
     );
- return updateOtp
+ return {
+  token:token,
+ }
   } catch (error: any) {
     throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, error?.message);
   }
 }; 
 
+const verifyOtp = async (token: string, otp: number) => {
+  if(!token){
+    throw new AppError(httpStatus.UNAUTHORIZED, "token is required");
+  }
+let decodedData: JwtPayload;
+
+  try{
+  decodedData = jwt.verify(token, config.jwt_secret as string) as JwtPayload;
+
+  }catch (error: any) {
+    throw new AppError(httpStatus?.INTERNAL_SERVER_ERROR, error?.message ||"server internal error");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: decodedData?.id as string,
+    },
+    include:{
+      verification:true
+    }
+  });
+
+  if (!user)
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'you are not registered with this mail',
+    );
+
+if(user?.verification?.expiredAt && moment().utc().isAfter(moment(user?.verification?.expiredAt)))
+  throw new AppError(httpStatus.BAD_REQUEST, "OTP has expired. Please request a new OTP.");
+
+if(user?.verification?.otp !== otp)
+  throw new AppError(httpStatus.BAD_REQUEST, "Invalid OTP. Please try again.");
+
+const result = await prisma.user.update({
+  where:{
+
+    id:user?.id
+  }, 
+  data:{
+verification:{
+update:{
+  status:true
+  
+}
+}
+  },
+  include:{
+    verification:true
+  }
+})
+
+
+return {
+  id:result?.id,
+  email:result?.email,
+}
+
+}
+
 export const otpServices = { 
   resendOtp,
+  verifyOtp
 };

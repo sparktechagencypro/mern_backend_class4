@@ -9,4 +9,9 @@ router.post(
   otpControllers.resendOtp,
 );
 
+router.post(
+  '/verify-otp', 
+  otpControllers.verifyOtp,
+);
+
 export const otpRoutes = router;
