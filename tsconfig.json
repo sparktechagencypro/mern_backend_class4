@@ -23,8 +23,7 @@
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
-    "declarationMap": true,
-
+    "declarationMap": true, 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
@@ -50,5 +49,6 @@
     "moduleDetection": "force"
   },
   "include": ["src/**/*"],
+   
   "exclude": ["node_modules", "dist", "firebase.json"]
 }

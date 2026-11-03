@@ -24,6 +24,7 @@ model User {
   profile     String?
   phoneNumber String?
   customerId String?
+  needToPasswordChange Boolean? @default(false)
   expireAt    DateTime? @default(now())
   isDeleted   Boolean?  @default(false)
   createdAt   DateTime? @default(now())

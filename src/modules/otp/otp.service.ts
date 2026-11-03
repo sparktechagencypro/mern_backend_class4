@@ -120,11 +120,12 @@ const result = await prisma.user.update({
 
     id:user?.id
   }, 
-  data:{
+  data:{ 
 verification:{
 update:{
-  status:true
-  
+  data:{
+    status:true
+  }
 }
 }
   },
@@ -133,10 +134,17 @@ update:{
   }
 })
 
+const jwtPayload = {
+  id:result?.id,
+  email:result?.email,
+  role:result?.role
+}
+const accessToken = jwt.sign(jwtPayload, config.jwt_secret as string, { expiresIn: "1h" });
 
 return {
   id:result?.id,
   email:result?.email,
+  accessToken
 }
 
 }
