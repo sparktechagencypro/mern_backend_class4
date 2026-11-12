@@ -20,7 +20,7 @@ const sendOtp = await otpServices.resendOtp({email:result.email})
 
 
 const getUser = catchAsync(async(req, res, next)=>{
-   console.log(req.query);
+   
 const result = await userService.getUser(req.query)
 
 sendResponse(res, {
