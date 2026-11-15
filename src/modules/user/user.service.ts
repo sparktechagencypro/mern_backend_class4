@@ -4,8 +4,7 @@ import { Role, type Prisma } from "@prisma/browser.js"
 import prisma from "utils/prisma.js"
 import bcrypt from 'bcrypt';
 import config from "config/index.js";
-import pickQuery from "utils/pickQuery.js"; 
-import paginationHelper from "helpers/pagination.helpers.js";
+import pickQuery from "utils/pickQuery.js";  
 import calculatePagination from "helpers/pagination.helpers.js";
 
 const createUser = async(payload: Prisma.UserCreateInput)=>{
@@ -44,7 +43,14 @@ const createUser = async(payload: Prisma.UserCreateInput)=>{
 const getUser = async (query: Record<string, any>) => {
   const { filters, pagination } = await pickQuery(query);
 
-  const { searchTerm, ...filtersData } = filters;
+  const { searchTerm, isActive, price,  ...filtersData } = filters;
+  if(isActive){
+    filtersData["filtersData"] = isActive == "true"? true : false
+  }
+
+  if(price){
+    filtersData["price"] = Number(price)
+  }
 
   // eslint-disable-next-line prefer-const
   let pipeline: Prisma.UserWhereInput = {
@@ -53,9 +59,11 @@ const getUser = async (query: Record<string, any>) => {
       role: Role.admin,
     },
   };
+
+
   // search condition
   if (searchTerm) {
-    pipeline.OR = ['name', 'email', 'phoneNumber', 'status'].map(field => ({
+    pipeline.OR = ['name', 'email', 'phoneNumber'].map((field) => ({
       [field]: {
         contains: searchTerm,
         mode: 'insensitive',
@@ -80,14 +88,16 @@ const getUser = async (query: Record<string, any>) => {
     ];
   }
 
-  pipeline.NOT = {
-    role: 'admin' as Role, 
-  };
+  // pipeline.NOT = {
+  //   role: 'admin' as Role, 
+  // };
 
   // Sorting condition
   const { page, limit, skip, sort } =
      calculatePagination(pagination);
 
+// 21,,3,4
+[1 , 2, 3]
   let sortArray: any[] = [];
   if (sort) {
     sortArray = sort.split(',').map(field => {
@@ -105,7 +115,12 @@ const getUser = async (query: Record<string, any>) => {
     take: limit,
     orderBy: sortArray,
     select: {
-      id: true, 
+      id:true,
+      profile:true,
+      name: true, 
+      email:true,
+      phoneNumber:true,
+
     },
   });
 

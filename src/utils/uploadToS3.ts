@@ -11,7 +11,7 @@ export const uploadToS3 =async (file:any, fileName:string,)=>{
         Body: file.buffer,
         ContentType: file.mimetype
     })
-
+ 
 
     try {
         

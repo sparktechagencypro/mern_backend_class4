@@ -1,6 +1,8 @@
 import catchAsync from "utils/catchAsync.js"
 import { uploadToS3 } from "utils/uploadToS3.js"
 import _ from "lodash"
+import generateRandomString from "utils/generateRendomString.js"
+import { promise } from "zod"
 
  
 interface IMultipleParams {
@@ -10,22 +12,27 @@ interface IMultipleParams {
 }
 
 const uploadSingle =  (name:string, path?:string) =>{
+
+
     return catchAsync(async(req, res, next)=>{
 if(req.file){
-    const filePath = path ? `${path}/${Math.floor(100000 + Math.random() * 900000)}` : `${Math.floor(100000 + Math.random() * 900000)}`
+    const filePath = path ? `${path}/${generateRandomString(5)}` : generateRandomString(5)
  req.body[name] = await uploadToS3(req.file, filePath ) 
 }
         next()
 })
-}
+} 
 /*[
 {name:"images", maxCount:5 , path:""},
 
  
  */
 const uploadMultiple =(files:IMultipleParams[])=> {
+    // [{name:"images", maxCount:5, path?:"images/" }, {name:"video", maxCount:2}, ]: []
   
     return catchAsync(async(req, res, next)=>{
+ 
+
 
     if(_.isEmpty(files)) return next()
 

@@ -10,4 +10,4 @@ import config from "config/index.js"
 })
 
 
-export default s3Clint
+export default s3Clint 

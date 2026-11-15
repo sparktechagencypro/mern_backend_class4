@@ -5,11 +5,16 @@ import { uploadMultiple, uploadSingle } from "middleware/upload.js";
 import parseData from "middleware/parseData.js";
 
 const uploads = multer({storage: memoryStorage()})
-const multiUpload = [{name:"images", maxCount:5 }, {name:"video", maxCount:2}]
+const multiUpload = [{name:"images", maxCount:5 }, {name:"videos", maxCount:2}, ]
 const router = Router()
+// uploadSingle("file", "/files"),
 
-router.post("/single", uploads.single("file"), uploadSingle("file", "/files"),  uploadController.uploadSingle)
-router.post("/multiple",uploads.fields(multiUpload), parseData(), uploadMultiple(multiUpload),  uploadController.uploadMultiple)
- 
+router.post("/single", uploads.single("file"),   uploadController.uploadSingle)
+router.post("/multiple",uploads.fields(multiUpload), 
+// parseData(), 
+// uploadMultiple(multiUpload),  
+
+uploadController.uploadMultiple)
+  
 const uploadRoutes = router;
 export default uploadRoutes
